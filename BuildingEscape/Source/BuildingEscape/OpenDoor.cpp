@@ -18,11 +18,15 @@ UOpenDoor::UOpenDoor()
 }
 
 
+
+
+
 // Called when the game starts
 void UOpenDoor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	
 	// ...
 	PlayerPawn = GetWorld()->GetFirstPlayerController()->GetPawn();
 	
@@ -38,7 +42,7 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	if (PressurePlate->IsOverlappingActor(PlayerPawn)) {
 		OpenDoor();
 		DoorLastOpenTime = GetWorld()->GetTimeSeconds();
-
+		
 	}
 	if (GetWorld()->GetTimeSeconds() - DoorLastOpenTime > DoorDelay) {
 

@@ -49,6 +49,8 @@ private:
 	float DoorLastOpenTime;
 
 	UPROPERTY(EditAnywhere)
-		float DoorDelay = 1.f;
+		float DoorDelay = 0.7f;
+
+
 	
 };
