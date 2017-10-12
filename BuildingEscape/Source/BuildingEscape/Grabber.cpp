@@ -3,6 +3,7 @@
 #include "Grabber.h"
 #include "Components/ActorComponent.h"
 #include "DrawDebugHelpers.h"
+#include "CollisionQueryParams.h"
 
 
 #define OUT
@@ -32,25 +33,34 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// Get player view point every tick
+	/// Get player view point every tick
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
 		OUT PlayerViewPointLocation,
 		OUT PlayerViewPointRotation
 	);
-	//Get Line Trace End
+	///Get Line Trace End
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
 	
-	//Draw debug arrow
+	///Draw debug arrow
 	DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd,FColor(255,0,0), false, 0.f, 0.f, 10.f);
 
-	//TODO Log out to test
-	UE_LOG(LogTemp, Warning, TEXT("Location: %s Rotation: %s"),
-		*PlayerViewPointLocation.ToString(),
-		*PlayerViewPointRotation.ToString());
-	//Ray-cast out to a certain distance
 
+	/// Setup query params
+	FCollisionQueryParams Traceparameters(FName(TEXT("")), false, GetOwner());
+
+	///Ray-cast out to a certain distance
+	FHitResult HitbyLineTrace;
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT HitbyLineTrace, PlayerViewPointLocation,
+		LineTraceEnd, FCollisionObjectQueryParams(ECC_PhysicsBody), Traceparameters
+	);
 	//get value of what hit
+	//UE_LOG(LogTemp, Warning, TEXT("Actor Hit: %s"),*HitbyLineTrace.GetActor()->GetName() );
+	AActor* ActorHit = HitbyLineTrace.GetActor();
+	if (ActorHit) {
+		UE_LOG(LogTemp, Warning, TEXT("Actor Hit: %s"), *ActorHit->GetName());
+	}
 }
 
